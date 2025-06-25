@@ -157,7 +157,7 @@ function plugin_aditionalinfo_get_form_content($data): string
 /**
  * Pré-processa o formulário antes de adicionar um item
  */
-function plugin_aditionalinfo_item_add($params)
+function plugin_aditionalinfo_item_add($params): void
 {
   if ($params['item']->getType() == 'Ticket') {
     $ticket_id = $params['item']->getID();
@@ -186,6 +186,17 @@ function plugin_aditionalinfo_item_add($params)
     } else {
       plugin_aditionalinfo_log("ERRO: Nenhum dado adicional encontrado para salvar no ticket $ticket_id");
     }
+  }
+}
+
+/**
+ * Atualiza os dados adicionais de um item
+ */
+function plugin_aditionalinfo_item_update($params): void
+{
+  if ($params['item']->getType() == 'Ticket') {
+    $ticket_id = $params['item']->getID();
+    plugin_aditionalinfo_save_data($ticket_id);
   }
 }
 
