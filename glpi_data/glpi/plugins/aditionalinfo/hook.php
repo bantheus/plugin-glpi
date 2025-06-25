@@ -219,4 +219,15 @@ function plugin_aditionalinfo_pre_item_add($params): void
   }
 }
 
+/**
+ * Processa os dados antes de atualizar um ticket
+ */
+function plugin_aditionalinfo_pre_item_update($params): void
+{
+  if ($params['item']->getType() == 'Ticket') {
+    $ticket_id = $params['item']->getID();
+    plugin_aditionalinfo_save_data($ticket_id);
+  }
+}
+
 ?>
