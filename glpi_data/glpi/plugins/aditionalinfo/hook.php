@@ -155,47 +155,36 @@ function plugin_aditionalinfo_get_form_content($data): string
 }
 
 /**
- * Captura os dados do formulário antes do item ser processado
+ * Pré-processa o formulário antes de adicionar um item
  */
-function plugin_aditionalinfo_pre_item_add($params): void
-{
-  if ($params['item']->getType() == 'Ticket') {
-
-    if (isset($_POST['external_responsible']) || isset($_POST['external_status']) || isset($_POST['external_deadline'])) {
-      $_SESSION['plugin_aditionalinfo_temp'] = [
-        'external_responsible' => $_POST['external_responsible'] ?? '',
-        'external_status' => $_POST['external_status'] ?? 'pendente',
-        'external_deadline' => $_POST['external_deadline'] ?? null
-      ];
-
-      plugin_aditionalinfo_log("Dados adicionais capturados do formulário: " . json_encode($_SESSION['plugin_aditionalinfo_temp']));
-    }
-  }
-}
-
-/**
- * Processa o salvamento dos dados adicionais quando um item é adicionado
- */
-function plugin_aditionalinfo_item_add($params): void
+function plugin_aditionalinfo_item_add($params)
 {
   if ($params['item']->getType() == 'Ticket') {
     $ticket_id = $params['item']->getID();
 
-    if (isset($_SESSION['plugin_aditionalinfo_temp'])) {
+    if (isset($_POST['external_responsible']) || isset($_POST['external_deadline']) || isset($_POST['external_status'])) {
+      plugin_aditionalinfo_save_data($ticket_id);
+    } elseif (isset($_SESSION['plugin_aditionalinfo_temp'])) {
+      plugin_aditionalinfo_log("Usando dados temporários da sessão para o ticket $ticket_id");
+      plugin_aditionalinfo_log("Dados temporários: " . json_encode($_SESSION['plugin_aditionalinfo_temp']));
+
       if (plugin_aditionalinfo_ensure_class_loaded()) {
         $additional_info = new PluginAditionalinfoTicket();
         $data = $_SESSION['plugin_aditionalinfo_temp'];
         $data['tickets_id'] = $ticket_id;
 
         $result = $additional_info->saveDataForTicket($data);
-        plugin_aditionalinfo_log("Dados adicionais salvos com sucesso para o ticket ID: $ticket_id");
+        plugin_aditionalinfo_log("Dados adicionais salvos para o ticket ID: $ticket_id - Resultado: " . ($result ? 'sucesso' : 'falha'));
 
-        unset($_SESSION['plugin_aditionalinfo_temp']);
+        if ($result) {
+          unset($_SESSION['plugin_aditionalinfo_temp']);
+          plugin_aditionalinfo_log("Dados temporários removidos da sessão após salvar para o ticket $ticket_id");
+        }
       } else {
-        plugin_aditionalinfo_log("Erro ao carregar a classe PluginAditionalinfoTicket para salvar dados adicionais para o ticket ID: $ticket_id");
+        plugin_aditionalinfo_log("ERRO: Não foi possível carregar a classe PluginAditionalinfoTicket para salvar dados temporários do ticket $ticket_id");
       }
     } else {
-      plugin_aditionalinfo_log("Não há dados adicionais para salvar para o ticket ID: $ticket_id");
+      plugin_aditionalinfo_log("ERRO: Nenhum dado adicional encontrado para salvar no ticket $ticket_id");
     }
   }
 }
