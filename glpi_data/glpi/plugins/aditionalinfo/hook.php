@@ -230,4 +230,45 @@ function plugin_aditionalinfo_pre_item_update($params): void
   }
 }
 
+/**
+ * Salva os dados adicionais de um ticket
+ */
+function plugin_aditionalinfo_save_data($ticket_id): bool
+{
+  if (
+    isset($_POST['external_responsible']) ||
+    isset($_POST['external_deadline']) ||
+    isset($_POST['external_status'])
+  ) {
+
+    try {
+      if (!plugin_aditionalinfo_ensure_class_loaded()) {
+        plugin_aditionalinfo_log("FATAL: Não foi possível carregar a classe PluginAditionalinfoTicket em save_data");
+        return false;
+      }
+
+      $additional_info = new PluginAditionalinfoTicket();
+
+      $data = [
+        'tickets_id' => $ticket_id,
+        'external_responsible' => $_POST['external_responsible'] ?? '',
+        'external_deadline' => (!empty($_POST['external_deadline'])) ? $_POST['external_deadline'] : null,
+        'external_status' => $_POST['external_status'] ?? 'pendente'
+      ];
+
+      $result = $additional_info->saveDataForTicket($data);
+      plugin_aditionalinfo_log("Dados salvos com sucesso para o ticket $ticket_id, resultado: " . ($result ? 'true' : 'false'));
+
+      return true;
+
+    } catch (Exception $e) {
+      plugin_aditionalinfo_log("Erro ao salvar dados: " . $e->getMessage());
+      return false;
+    }
+  } else {
+    plugin_aditionalinfo_log("Nenhum dado de informação adicional encontrado no POST para o ticket $ticket_id");
+    return false;
+  }
+}
+
 ?>
