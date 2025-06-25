@@ -1,0 +1,10 @@
+glpi_data/glpi/*
+glpi_data/mysql/
+mysql_data/
+
+!glpi_data/glpi/plugins/
+!glpi_data/glpi/plugins/**
+
+!.gitignore
+!docker-compose.yml
+

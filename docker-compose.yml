@@ -1,0 +1,29 @@
+version: "3.3"
+
+services:
+  mysql:
+    image: mysql:5.7
+    container_name: mysql-glpi-plugin
+    restart: always
+    environment:
+      MYSQL_ROOT_PASSWORD: root
+      MYSQL_DATABASE: glpi
+      MYSQL_USER: glpi
+      MYSQL_PASSWORD: glpi
+    ports:
+      - "3306:3306"
+    volumes:
+      - ./mysql_data:/var/lib/mysql
+
+  glpi:
+    image: diouxx/glpi
+    container_name: glpi-plugin
+    restart: always
+    ports:
+      - "8080:80"
+    volumes:
+      - ./glpi_data:/var/www/html
+    environment:
+      TIMEZONE: America/Sao_Paulo
+    depends_on:
+      - mysql
