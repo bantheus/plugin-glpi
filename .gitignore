@@ -7,4 +7,5 @@ mysql_data/
 
 !.gitignore
 !docker-compose.yml
-
+!plugins/
+!plugins/**
