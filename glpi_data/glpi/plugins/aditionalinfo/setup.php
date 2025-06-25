@@ -18,7 +18,7 @@ function plugin_init_aditionalinfo(): void
 
   $PLUGIN_HOOKS['csrf_compliant']['aditionalinfo'] = true;
 
-  $PLUGIN_HOOKS['add_css']['aditionalinfo'] = 'css/style.css';
+  $PLUGIN_HOOKS['add_css']['aditionalinfo'] = 'css/additional-info.css';
 
   $PLUGIN_HOOKS['pre_item_form']['aditionalinfo'] = 'plugin_aditionalinfo_pre_item_form';
 

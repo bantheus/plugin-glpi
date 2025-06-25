@@ -123,154 +123,44 @@ function plugin_aditionalinfo_get_form_content($data): string
   plugin_aditionalinfo_log("Valores do formulário: responsible='$external_responsible', deadline='$external_deadline', status='$external_status'");
 
   $content = '
-  <style>
-    .plugin-additional-info {
-      background: #fff;
-      border: 1px solid #ddd;
-      border-radius: 4px;
-      margin: 15px 0;
-      box-shadow: 0 1px 3px rgba(0,0,0,0.1);
-    }
-    
-    .plugin-additional-info .header {
-      background: linear-gradient(to bottom, #f8f9fa 0%, #e9ecef 100%);
- 
-      padding: 12px 15px;
-     
-      color: #495057;
-      font-weight: 500;
-      font-size: 14px;
-    }
-    
-    .plugin-additional-info .header::before {
-      content: "📋";
-      margin-right: 8px;
-    }
-    
-    .plugin-fields-list {
-      padding: 20px;
-      list-style: none;
-      margin: 0;
-    }
-    
-    .plugin-field-item {
-      display: flex;
-      align-items: center;
-      margin-bottom: 15px;
-      min-height: 40px;
-    }
-    
-    .plugin-field-item:last-child {
-      margin-bottom: 0;
-    }
-    
-    .plugin-field-label {
-      font-weight: 600;
-      color: #495057;
-      width: 200px;
-      flex-shrink: 0;
-      margin-right: 15px;
-      font-size: 13px;
-    }
-    
-    .plugin-field-input {
-      flex: 1;
-      max-width: 300px;
-    }
-    
-    .plugin-field-input input,
-    .plugin-field-input select {
-      width: 100%;
-      padding: 8px 12px;
-      border: 1px solid #ced4da;
-      border-radius: 4px;
-      font-size: 13px;
-      transition: border-color 0.15s ease-in-out, box-shadow 0.15s ease-in-out;
-    }
-    
-    .plugin-field-input input:focus,
-    .plugin-field-input select:focus {
-      outline: none;
-      border-color: #80bdff;
-      box-shadow: 0 0 0 0.2rem rgba(0,123,255,.25);
-    }
-    
-    .plugin-field-input select {
-      background-image: url("data:image/svg+xml,%3csvg xmlns=\'http://www.w3.org/2000/svg\' viewBox=\'0 0 4 5\'%3e%3cpath fill=\'%23343a40\' d=\'M2 0L0 2h4zm0 5L0 3h4z\'/%3e%3c/svg%3e");
-      background-repeat: no-repeat;
-      background-position: right 0.75rem center;
-      background-size: 8px 10px;
-      padding-right: 30px;
-    }
-    
-    .plugin-field-description {
-      color: #6c757d;
-      font-size: 12px;
-      font-style: italic;
-      margin-left: 215px;
-      margin-top: 5px;
-    }
-    
-    @media (max-width: 768px) {
-      .plugin-field-item {
-        flex-direction: column;
-        align-items: flex-start;
-      }
-      
-      .plugin-field-label {
-        width: 100%;
-        margin-bottom: 5px;
-        margin-right: 0;
-      }
-      
-      .plugin-field-input {
-        max-width: 100%;
-      }
-      
-      .plugin-field-description {
-        margin-left: 0;
-      }
-    }
-  </style>
-  
-  <div class="plugin-additional-info">
-    <div class="header">
-      Informações Adicionais
+  <div class="additional-info-container">
+    <div class="additional-info-title">
+      📋 Informações Adicionais
     </div>
     
-    <ul class="plugin-fields-list">
-      <li class="plugin-field-item">
-        <label class="plugin-field-label">Responsável Externo:</label>
-        <div class="plugin-field-input">
+    <ul class="additional-info-list">
+      <li class="additional-info-item">
+        <label class="additional-info-label">Responsável<br>Externo</label>
+        <div class="additional-info-field">
           <input type="text" 
                  name="external_responsible" 
                  value="' . htmlspecialchars($external_responsible) . '" 
-                 placeholder="Nome do responsável externo">
+                 placeholder="Nome do responsável externo"
+                 class="additional-info-input">
         </div>
       </li>
       
-      <li class="plugin-field-item">
-        <label class="plugin-field-label">Status Externo:</label>
-        <div class="plugin-field-input">
-          <select name="external_status">
-            <option value="pendente"' . ($external_status == 'pendente' ? ' selected' : '') . '>Pendente</option>
-            <option value="em_progresso"' . ($external_status == 'em_progresso' ? ' selected' : '') . '>Em Progresso</option>
-            <option value="concluido"' . ($external_status == 'concluido' ? ' selected' : '') . '>Concluído</option>
+      <li class="additional-info-item">
+        <label class="additional-info-label">Status<br>Externo</label>
+        <div class="additional-info-field">
+          <select name="external_status" class="additional-info-select">
+            <option value="pendente"' . ($external_status == 'pendente' ? ' selected' : '') . '>⏳ Pendente</option>
+            <option value="em_progresso"' . ($external_status == 'em_progresso' ? ' selected' : '') . '>🔄 Em Progresso</option>
+            <option value="concluido"' . ($external_status == 'concluido' ? ' selected' : '') . '>✅ Concluído</option>
           </select>
         </div>
       </li>
       
-      <li class="plugin-field-item">
-        <label class="plugin-field-label">Prazo de Atendimento:</label>
-        <div class="plugin-field-input">
+      <li class="additional-info-item">
+        <label class="additional-info-label">Prazo de<br>Atendimento</label>
+        <div class="additional-info-field">
           <input type="date" 
                  name="external_deadline" 
-                 value="' . htmlspecialchars($external_deadline) . '">
+                 value="' . htmlspecialchars($external_deadline) . '"
+                 class="additional-info-input">
         </div>
       </li>
     </ul>
-    
-   
   </div>';
 
   return $content;
