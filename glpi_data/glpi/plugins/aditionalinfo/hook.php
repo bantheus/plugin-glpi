@@ -200,4 +200,23 @@ function plugin_aditionalinfo_item_update($params): void
   }
 }
 
+/**
+ * Processa os dados antes de criar um ticket
+ */
+function plugin_aditionalinfo_pre_item_add($params): void
+{
+  if ($params['item']->getType() == 'Ticket') {
+    if (isset($_POST['external_responsible']) || isset($_POST['external_deadline']) || isset($_POST['external_status'])) {
+      $_SESSION['plugin_aditionalinfo_temp'] = [
+        'external_responsible' => $_POST['external_responsible'] ?? '',
+        'external_deadline' => (!empty($_POST['external_deadline'])) ? $_POST['external_deadline'] : null,
+        'external_status' => $_POST['external_status'] ?? 'pendente'
+      ];
+      plugin_aditionalinfo_log("Dados temporários salvos em pre_item_add: " . json_encode($_SESSION['plugin_aditionalinfo_temp']));
+    } else {
+      plugin_aditionalinfo_log("Nenhum campo do plugin encontrado no POST durante pre_item_add");
+    }
+  }
+}
+
 ?>
