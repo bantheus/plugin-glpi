@@ -271,4 +271,25 @@ function plugin_aditionalinfo_save_data($ticket_id): bool
   }
 }
 
+/**
+ * Verifica se os hooks estão registrados corretamente após a inicialização do plugin
+ */
+function plugin_aditionalinfo_post_init(): void
+{
+  plugin_aditionalinfo_ensure_class_loaded();
+
+  global $PLUGIN_HOOKS;
+  if (isset($PLUGIN_HOOKS['item_add']['aditionalinfo'])) {
+    plugin_aditionalinfo_log("Hook item_add está registrado");
+  } else {
+    plugin_aditionalinfo_log("ERRO: Hook item_add NÃO está registrado");
+  }
+
+  if (isset($PLUGIN_HOOKS['item_update']['aditionalinfo'])) {
+    plugin_aditionalinfo_log("Hook item_update está registrado");
+  } else {
+    plugin_aditionalinfo_log("ERRO: Hook item_update NÃO está registrado");
+  }
+}
+
 ?>

@@ -24,6 +24,8 @@ function plugin_init_aditionalinfo(): void
   $PLUGIN_HOOKS['pre_item_add']['aditionalinfo'] = 'plugin_aditionalinfo_pre_item_add';
   $PLUGIN_HOOKS['pre_item_update']['aditionalinfo'] = 'plugin_aditionalinfo_pre_item_update';
 
+  $PLUGIN_HOOKS['post_init']['aditionalinfo'] = 'plugin_aditionalinfo_post_init';
+
   $PLUGIN_HOOKS['add_css']['aditionalinfo'] = 'plugin_aditionalinfo_add_css';
 }
 
