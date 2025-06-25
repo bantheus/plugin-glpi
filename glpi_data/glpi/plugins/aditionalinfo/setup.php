@@ -14,7 +14,12 @@ function plugin_init_aditionalinfo(): void
 
   $PLUGIN_HOOKS['csrf_compliant']['aditionalinfo'] = true;
 
+  $PLUGIN_HOOKS['install']['aditionalinfo'] = 'plugin_aditionalinfo_install';
+  $PLUGIN_HOOKS['uninstall']['aditionalinfo'] = 'plugin_aditionalinfo_uninstall';
+
   $PLUGIN_HOOKS['pre_item_form']['aditionalinfo'] = 'plugin_aditionalinfo_pre_item_form';
+
+  $PLUGIN_HOOKS['add_css']['aditionalinfo'] = 'plugin_aditionalinfo_add_css';
 }
 
 /**
@@ -70,4 +75,13 @@ function plugin_aditionalinfo_check_config($verbose = false): bool
 
   return true;
 }
+
+/**
+ * Adiciona CSS do plugin
+ */
+function plugin_aditionalinfo_add_css(): array
+{
+  return ['/plugins/aditionalinfo/css/plugin.css'];
+}
+
 ?>

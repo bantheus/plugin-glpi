@@ -47,7 +47,8 @@ function plugin_aditionalinfo_pre_item_form($params): void
     $ticket_id = $params['item']->getID();
     $data = [];
 
-    plugin_aditionalinfo_log("Carregando dados adicionais para o ticket ID: $ticket_id");
+    // Incluir o arquivo CSS
+    echo '<link rel="stylesheet" type="text/css" href="' . Plugin::getWebDir('aditionalinfo') . '/css/additional-info.css">';
 
     if ($ticket_id && $ticket_id > 0) {
       try {
@@ -67,6 +68,56 @@ function plugin_aditionalinfo_pre_item_form($params): void
     echo plugin_aditionalinfo_get_form_content($data);
     echo "</div>";
   }
+}
+
+function plugin_aditionalinfo_get_form_content($data): string
+{
+  $external_responsible = $data['external_responsible'] ?? '';
+  $external_deadline = $data['external_deadline'] ?? '';
+  $external_status = $data['external_status'] ?? 'pendente';
+
+  $content = '
+  <div class="additional-info-container">
+    <div class="additional-info-title">
+      📋 Informações Adicionais
+    </div>
+    
+    <ul class="additional-info-list">
+      <li class="additional-info-item">
+        <label class="additional-info-label">Responsável<br>Externo</label>
+        <div class="additional-info-field">
+          <input type="text" 
+                 name="external_responsible" 
+                 value="' . htmlspecialchars($external_responsible) . '" 
+                 placeholder="Nome do responsável externo"
+                 class="additional-info-input">
+        </div>
+      </li>
+      
+      <li class="additional-info-item">
+        <label class="additional-info-label">Status<br>Externo</label>
+        <div class="additional-info-field">
+          <select name="external_status" class="additional-info-select">
+            <option value="pendente"' . ($external_status == 'pendente' ? ' selected' : '') . '>⏳ Pendente</option>
+            <option value="em_progresso"' . ($external_status == 'em_progresso' ? ' selected' : '') . '>🔄 Em Progresso</option>
+            <option value="concluido"' . ($external_status == 'concluido' ? ' selected' : '') . '>✅ Concluído</option>
+          </select>
+        </div>
+      </li>
+      
+      <li class="additional-info-item">
+        <label class="additional-info-label">Prazo de<br>Atendimento</label>
+        <div class="additional-info-field">
+          <input type="date" 
+                 name="external_deadline" 
+                 value="' . htmlspecialchars($external_deadline) . '"
+                 class="additional-info-input">
+        </div>
+      </li>
+    </ul>
+  </div>';
+
+  return $content;
 }
 
 ?>
