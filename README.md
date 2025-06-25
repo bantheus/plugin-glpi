@@ -78,7 +78,7 @@ chmod -R 755 aditionalinfo/
 ```bash
 # 1. Clone o repositório
 git clone https://github.com/bantheus/plugin-glpi.git
-cd plugin-glpi-plss
+cd plugin-glpi
 
 # 2. Suba o ambiente
 docker compose up -d
