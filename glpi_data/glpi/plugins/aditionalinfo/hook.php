@@ -292,4 +292,102 @@ function plugin_aditionalinfo_post_init(): void
   }
 }
 
+/**
+ * Rede de segurança
+ */
+function plugin_aditionalinfo_capture_ticket_action(): void
+{
+  if (isset($_POST) && !empty($_POST)) {
+    if (isset($_POST['external_responsible']) || isset($_POST['external_deadline']) || isset($_POST['external_status'])) {
+      plugin_aditionalinfo_log("POST com campos do plugin detectado: " . json_encode($_POST));
+    }
+
+    $is_ticket_action = false;
+    $action_type = '';
+
+    if (isset($_POST['itemtype']) && $_POST['itemtype'] == 'Ticket') {
+      $is_ticket_action = true;
+      $action_type = 'itemtype';
+      plugin_aditionalinfo_log("Ação de ticket detectada via itemtype");
+    } elseif (
+      isset($_POST['id']) && isset($_POST['update']) &&
+      (isset($_POST['external_responsible']) || isset($_POST['external_deadline']) || isset($_POST['external_status']))
+    ) {
+      $is_ticket_action = true;
+      $action_type = 'update';
+      plugin_aditionalinfo_log("Ação de atualização de ticket detectada via id+update+campos");
+    } elseif (
+      isset($_POST['add']) &&
+      (isset($_POST['external_responsible']) || isset($_POST['external_deadline']) || isset($_POST['external_status']))
+    ) {
+      $is_ticket_action = true;
+      $action_type = 'add';
+      plugin_aditionalinfo_log("Ação de criação de ticket detectada via add+campos");
+    }
+
+    if ($is_ticket_action) {
+      if (isset($_POST['external_responsible']) || isset($_POST['external_deadline']) || isset($_POST['external_status'])) {
+        plugin_aditionalinfo_log("Campos do plugin detectados no POST - tipo de ação: $action_type");
+
+        if ($action_type == 'add') {
+          $_SESSION['plugin_aditionalinfo_temp'] = [
+            'external_responsible' => $_POST['external_responsible'] ?? '',
+            'external_deadline' => (!empty($_POST['external_deadline'])) ? $_POST['external_deadline'] : null,
+            'external_status' => $_POST['external_status'] ?? 'pendente'
+          ];
+          plugin_aditionalinfo_log("Alternativo: Dados temporários salvos para criação: " . json_encode($_SESSION['plugin_aditionalinfo_temp']));
+
+          register_shutdown_function('plugin_aditionalinfo_process_pending_creation');
+
+        } elseif (isset($_POST['id']) && $_POST['id'] > 0) {
+          plugin_aditionalinfo_log("Alternativo: Salvando dados para o ticket ID: " . $_POST['id']);
+          plugin_aditionalinfo_direct_save($_POST['id']);
+        }
+      }
+    }
+  }
+}
+
+/**
+ * Salva os dados adicionais de um ticket diretamente
+ */
+function plugin_aditionalinfo_direct_save($ticket_id): bool
+{
+  try {
+    if (!plugin_aditionalinfo_ensure_class_loaded()) {
+      plugin_aditionalinfo_log("FATAL: Não foi possível carregar a classe PluginAditionalinfoTicket");
+      return false;
+    }
+
+    plugin_aditionalinfo_log("Criando instância da PluginAditionalinfoTicket");
+    $additional_info = new PluginAditionalinfoTicket();
+
+    $data = [
+      'tickets_id' => $ticket_id,
+      'external_responsible' => $_POST['external_responsible'] ?? '',
+      'external_deadline' => (!empty($_POST['external_deadline'])) ? $_POST['external_deadline'] : null,
+      'external_status' => $_POST['external_status'] ?? 'pendente'
+    ];
+
+    plugin_aditionalinfo_log("Dados do salvamento direto: " . json_encode($data));
+    plugin_aditionalinfo_log("Chamando método saveDataForTicket");
+
+    $result = $additional_info->saveDataForTicket($data);
+    plugin_aditionalinfo_log("saveDataForTicket retornou: " . ($result ? 'true' : 'false'));
+    plugin_aditionalinfo_log("Salvamento direto bem-sucedido para o ticket $ticket_id");
+
+    return true;
+
+  } catch (Exception $e) {
+    plugin_aditionalinfo_log("Erro no salvamento direto: " . $e->getMessage());
+    plugin_aditionalinfo_log("Rastreamento do erro: " . $e->getTraceAsString());
+    return false;
+  } catch (Error $e) {
+    plugin_aditionalinfo_log("Erro fatal no salvamento direto: " . $e->getMessage());
+    plugin_aditionalinfo_log("Rastreamento do erro: " . $e->getTraceAsString());
+    return false;
+  }
+}
+
+plugin_aditionalinfo_capture_ticket_action();
 ?>
