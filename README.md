@@ -61,7 +61,7 @@ O plugin permite que equipes de suporte acompanhem informações específicas re
 ```bash
 # 1. Clone o repositório no diretório de plugins do GLPI
 cd /var/www/html/glpi/plugins/
-git clone https://github.com/bantheus/plugin-glpi-plss.git aditionalinfo
+git clone https://github.com/bantheus/plugin-glpi.git aditionalinfo
 
 # 2. Ajuste as permissões
 chown -R www-data:www-data aditionalinfo/
@@ -77,7 +77,7 @@ chmod -R 755 aditionalinfo/
 
 ```bash
 # 1. Clone o repositório
-git clone https://github.com/bantheus/plugin-glpi-plss.git
+git clone https://github.com/bantheus/plugin-glpi.git
 cd plugin-glpi-plss
 
 # 2. Suba o ambiente
