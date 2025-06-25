@@ -2,6 +2,37 @@
 
 include_once(__DIR__ . '/inc/functions.php');
 
+function plugin_aditionalinfo_ensure_class_loaded(): bool
+{
+  if (class_exists('PluginAditionalinfoTicket')) {
+    plugin_aditionalinfo_log("Classe PluginAditionalinfoTicket já está carregada");
+    return true;
+  }
+
+  if (!class_exists('CommonDBTM')) {
+    plugin_aditionalinfo_log("ERRO: Classe CommonDBTM não está carregada. Certifique-se de que o GLPI está corretamente instalado e configurado.");
+    return false;
+  }
+
+  $class_file = GLPI_ROOT . '/plugins/aditionalinfo/inc/aditionalinfo.class.php';
+
+  if (file_exists($class_file)) {
+    include_once($class_file);
+    plugin_aditionalinfo_log("Arquivo de classe encontrado e incluído: $class_file");
+
+    if (class_exists('PluginAditionalinfoTicket')) {
+      plugin_aditionalinfo_log("Classe PluginAditionalinfoTicket carregada com sucesso após include");
+      return true;
+    } else {
+      plugin_aditionalinfo_log("ERRO: Classe PluginAditionalinfoTicket não encontrada após incluir o arquivo $class_file");
+      return false;
+    }
+  } else {
+    plugin_aditionalinfo_log("ERRO: Arquivo de classe não encontrado: $class_file");
+    return false;
+  }
+}
+
 /**
  * Instala o plugin
  */
@@ -70,6 +101,9 @@ function plugin_aditionalinfo_pre_item_form($params): void
   }
 }
 
+/**
+ * Gera o conteúdo do formulário de informações adicionais
+ */
 function plugin_aditionalinfo_get_form_content($data): string
 {
   $external_responsible = $data['external_responsible'] ?? '';
@@ -118,6 +152,52 @@ function plugin_aditionalinfo_get_form_content($data): string
   </div>';
 
   return $content;
+}
+
+/**
+ * Captura os dados do formulário antes do item ser processado
+ */
+function plugin_aditionalinfo_pre_item_add($params): void
+{
+  if ($params['item']->getType() == 'Ticket') {
+
+    if (isset($_POST['external_responsible']) || isset($_POST['external_status']) || isset($_POST['external_deadline'])) {
+      $_SESSION['plugin_aditionalinfo_temp'] = [
+        'external_responsible' => $_POST['external_responsible'] ?? '',
+        'external_status' => $_POST['external_status'] ?? 'pendente',
+        'external_deadline' => $_POST['external_deadline'] ?? null
+      ];
+
+      plugin_aditionalinfo_log("Dados adicionais capturados do formulário: " . json_encode($_SESSION['plugin_aditionalinfo_temp']));
+    }
+  }
+}
+
+/**
+ * Processa o salvamento dos dados adicionais quando um item é adicionado
+ */
+function plugin_aditionalinfo_item_add($params): void
+{
+  if ($params['item']->getType() == 'Ticket') {
+    $ticket_id = $params['item']->getID();
+
+    if (isset($_SESSION['plugin_aditionalinfo_temp'])) {
+      if (plugin_aditionalinfo_ensure_class_loaded()) {
+        $additional_info = new PluginAditionalinfoTicket();
+        $data = $_SESSION['plugin_aditionalinfo_temp'];
+        $data['tickets_id'] = $ticket_id;
+
+        $result = $additional_info->saveDataForTicket($data);
+        plugin_aditionalinfo_log("Dados adicionais salvos com sucesso para o ticket ID: $ticket_id");
+
+        unset($_SESSION['plugin_aditionalinfo_temp']);
+      } else {
+        plugin_aditionalinfo_log("Erro ao carregar a classe PluginAditionalinfoTicket para salvar dados adicionais para o ticket ID: $ticket_id");
+      }
+    } else {
+      plugin_aditionalinfo_log("Não há dados adicionais para salvar para o ticket ID: $ticket_id");
+    }
+  }
 }
 
 ?>
