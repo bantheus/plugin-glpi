@@ -12,10 +12,13 @@ function plugin_init_aditionalinfo(): void
 {
   global $PLUGIN_HOOKS;
 
+  if (function_exists('plugin_aditionalinfo_log')) {
+    plugin_aditionalinfo_log("Iniciando o plugin Informações Adicionais para Chamados");
+  }
+
   $PLUGIN_HOOKS['csrf_compliant']['aditionalinfo'] = true;
 
-  $PLUGIN_HOOKS['install']['aditionalinfo'] = 'plugin_aditionalinfo_install';
-  $PLUGIN_HOOKS['uninstall']['aditionalinfo'] = 'plugin_aditionalinfo_uninstall';
+  $PLUGIN_HOOKS['add_css']['aditionalinfo'] = 'css/style.css';
 
   $PLUGIN_HOOKS['pre_item_form']['aditionalinfo'] = 'plugin_aditionalinfo_pre_item_form';
 
@@ -26,7 +29,11 @@ function plugin_init_aditionalinfo(): void
 
   $PLUGIN_HOOKS['post_init']['aditionalinfo'] = 'plugin_aditionalinfo_post_init';
 
-  $PLUGIN_HOOKS['add_css']['aditionalinfo'] = 'plugin_aditionalinfo_add_css';
+  $PLUGIN_HOOKS['init']['aditionalinfo'] = 'plugin_aditionalinfo_init_session';
+
+  if (function_exists('plugin_aditionalinfo_log')) {
+    plugin_aditionalinfo_log("Plugin Informações Adicionais para Chamados inicializado com sucesso.");
+  }
 }
 
 /**
@@ -82,13 +89,4 @@ function plugin_aditionalinfo_check_config($verbose = false): bool
 
   return true;
 }
-
-/**
- * Adiciona CSS do plugin
- */
-function plugin_aditionalinfo_add_css(): array
-{
-  return ['/plugins/aditionalinfo/css/plugin.css'];
-}
-
 ?>

@@ -1,7 +1,7 @@
 <?php
 
 /**
- * Função auxiliar para log personalizado
+ * Log
  */
 function plugin_aditionalinfo_log($message): void
 {
