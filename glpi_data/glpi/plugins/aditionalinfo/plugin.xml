@@ -1,0 +1,109 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<root>
+  <name>Additional Info</name>
+  <key>aditionalinfo</key>
+  <state>stable</state>
+  <description>
+    <short>
+      <en>Additional Information for Tickets - PLSS Test</en>
+      <pt_BR>Informações Adicionais para Chamados - Teste PLSS</pt_BR>
+    </short>
+    <long>
+      <en>Plugin that adds additional fields to tickets including external responsible, external
+        status, and external deadline. Developed as part of PLSS testing requirements.</en>
+      <pt_BR>Plugin que adiciona campos adicionais aos chamados incluindo responsável externo,
+        status externo e prazo de atendimento. Desenvolvido como parte dos requisitos de teste PLSS.</pt_BR>
+    </long>
+  </description>
+  <homepage>https://github.com/bantheus/plugin-glpi.git</homepage>
+  <authors>
+    <author>Matheus Schmidt</author>
+  </authors>
+  <versions>
+    <version>
+      <num>1.0.0</num>
+      <compatibility>
+        <min_glpi>10.0.0</min_glpi>
+        <max_glpi>11.0.99</max_glpi>
+      </compatibility>
+      <changelog>
+        <en>Initial release with additional ticket fields</en>
+        <pt_BR>Lançamento inicial com campos adicionais para chamados</pt_BR>
+      </changelog>
+    </version>
+  </versions>
+  <langs>
+    <lang>en_GB</lang>
+    <lang>pt_BR</lang>
+  </langs>
+  <license>GPL v2+</license>
+  <tags>
+    <en>
+      <tag>ticket</tag>
+      <tag>additional</tag>
+      <tag>fields</tag>
+      <tag>external</tag>
+      <tag>responsible</tag>
+      <tag>status</tag>
+      <tag>deadline</tag>
+    </en>
+    <pt_BR>
+      <tag>chamado</tag>
+      <tag>adicional</tag>
+      <tag>campos</tag>
+      <tag>externo</tag>
+      <tag>responsavel</tag>
+      <tag>status</tag>
+      <tag>prazo</tag>
+    </pt_BR>
+  </tags>
+  <requirements>
+    <glpi>
+      <min>10.0.0</min>
+    </glpi>
+  </requirements>
+  <features>
+    <feature>
+      <name>External Responsible Field</name>
+      <description>
+        <en>Add external responsible person field to tickets</en>
+        <pt_BR>Adiciona campo de responsável externo aos chamados</pt_BR>
+      </description>
+    </feature>
+    <feature>
+      <name>External Status</name>
+      <description>
+        <en>Track external status with predefined options (Pending, In Progress, Completed)</en>
+        <pt_BR>Rastreia status externo com opções predefinidas (Pendente, Em Progresso, Concluído)</pt_BR>
+      </description>
+    </feature>
+    <feature>
+      <name>External Deadline</name>
+      <description>
+        <en>Set external deadline for ticket resolution</en>
+        <pt_BR>Define prazo externo para resolução do chamado</pt_BR>
+      </description>
+    </feature>
+    <feature>
+      <name>Responsive Design</name>
+      <description>
+        <en>Mobile-friendly interface that adapts to different screen sizes</en>
+        <pt_BR>Interface responsiva que se adapta a diferentes tamanhos de tela</pt_BR>
+      </description>
+    </feature>
+  </features>
+  <installation>
+    <en>
+      1. Download the plugin archive
+      2. Extract to GLPI plugins directory
+      3. Install via GLPI Administration > Setup > Plugins
+      4. Enable the plugin
+    </en>
+    <pt_BR>
+      1. Baixe o arquivo do plugin
+      2. Extraia para o diretório de plugins do GLPI
+      3. Instale via GLPI Administração > Configurar > Plugins
+      4. Ative o plugin
+    </pt_BR>
+  </installation>
+</root>

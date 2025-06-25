@@ -46,7 +46,7 @@ function plugin_version_aditionalinfo(): array
     'version' => PLUGIN_ADITIONALINFO_VERSION,
     'author' => 'Matheus Schmidt',
     'license' => 'GPLv2+',
-    'homepage' => '',
+    'homepage' => 'https://github.com/bantheus/plugin-glpi.git',
     'requirements' => [
       'glpi' => [
         'min' => '10.0',
