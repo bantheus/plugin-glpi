@@ -23,4 +23,17 @@ function plugin_aditionalinfo_install(): bool
   return true;
 }
 
+/**
+ * Desinstala o plugin
+ */
+function plugin_aditionalinfo_uninstall(): bool
+{
+  global $DB;
+
+  $query = "DROP TABLE IF EXISTS `glpi_plugin_aditionalinfo_tickets`";
+  $DB->queryOrDie($query, $DB->error());
+
+  return true;
+}
+
 ?>
