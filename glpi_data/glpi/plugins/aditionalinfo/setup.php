@@ -51,27 +51,17 @@ function plugin_aditionalinfo_check_prerequisites(): bool
  */
 function plugin_aditionalinfo_check_config($verbose = false): bool
 {
-  global $DB;
-
-  $plugin = new Plugin();
-  if (!$plugin->isInstalled('aditionalinfo')) {
-    if ($verbose) {
-      echo "Plugin Informações Adicionais não está instalado corretamente.";
-    }
-    return false;
-  }
-
-  if (!$plugin->isActivated('aditionalinfo')) {
-    if ($verbose) {
-      echo "Plugin Informações Adicionais não está ativado.";
-    }
-    return false;
-  }
-
   $plugin_dir = GLPI_ROOT . "/plugins/aditionalinfo";
   if (!is_readable($plugin_dir)) {
     if ($verbose) {
       echo "Diretório do plugin não possui permissões de leitura adequadas.";
+    }
+    return false;
+  }
+
+  if (!file_exists($plugin_dir . "/setup.php")) {
+    if ($verbose) {
+      echo "Arquivo setup.php não encontrado no diretório do plugin.";
     }
     return false;
   }
