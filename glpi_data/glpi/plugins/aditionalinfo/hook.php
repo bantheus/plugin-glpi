@@ -1,6 +1,16 @@
 <?php
 
 /**
+ * Log
+ */
+function plugin_aditionalinfo_log($message)
+{
+  $log_file = GLPI_ROOT . '/plugins/aditionalinfo/debug.log';
+  $timestamp = date('d-m-Y H:i:s');
+  file_put_contents($log_file, "[$timestamp] $message\n", FILE_APPEND | LOCK_EX);
+}
+
+/**
  * Instala o plugin
  */
 function plugin_aditionalinfo_install(): bool
@@ -34,6 +44,37 @@ function plugin_aditionalinfo_uninstall(): bool
   $DB->queryOrDie($query, $DB->error());
 
   return true;
+}
+
+/**
+ * Carrega o conteúdo do formulário de informações adicionais
+ */
+function plugin_aditionalinfo_pre_item_form($params): void
+{
+  if ($params['item']->getType() == 'Ticket') {
+    $ticket_id = $params['item']->getID();
+    $data = [];
+
+    plugin_aditionalinfo_log("Carregando dados adicionais para o ticket ID: $ticket_id");
+
+    if ($ticket_id && $ticket_id > 0) {
+      try {
+        $additional_info = new PluginAditionalinfoTicket();
+        $data = $additional_info->getDataForTicket($ticket_id);
+
+        plugin_aditionalinfo_log("Dados adicionais carregados com sucesso para o ticket ID: $ticket_id" . json_encode($data));
+
+      } catch (Exception $e) {
+        plugin_aditionalinfo_log("Erro ao carregar dados adicionais para o ticket ID: $ticket_id - " . $e->getMessage());
+      }
+    } else {
+      plugin_aditionalinfo_log("Novo ticket sendo criado, não há dados adicionais para carregar.");
+    }
+
+    echo "<div id='additional-info-section'>";
+    echo plugin_aditionalinfo_get_form_content($data);
+    echo "</div>";
+  }
 }
 
 ?>
